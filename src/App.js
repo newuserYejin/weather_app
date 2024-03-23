@@ -3,6 +3,7 @@ import './App.css';
 import { useEffect, useState } from 'react';
 import WeatherBox from './component/WeatherBox.js';
 import WeatherButton from './component/WeatherButton.js';
+import ClipLoader from "react-spinners/ClipLoader";
 
 // 1. 앱이 실해되면 현재 위치 기반 날씨 추출(현재의 위도와 경도 받아내기)
 // 2. api를 통해 도시, 날씨상태, 섭씨와 화씨로 표현
@@ -14,6 +15,10 @@ import WeatherButton from './component/WeatherButton.js';
 function App() {
   const API_KEY = "e7056fa76f6a6b7d8be7d23179c66858"
   const [weather, setWeather] = useState(null)
+  const cities = ['Busan', 'Incheon', 'Paris']
+  const [city, setCity] = useState('')
+  let [loading, setLoading] = useState(false)
+  let [errorMsg, setErrorMsg] = useState()
 
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -24,41 +29,65 @@ function App() {
   }
 
   const getWeatherByCuurentLocation = async (lat, lon) => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+    try {
+      let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      setLoading(true)
+      const response = await fetch(url)
+      const data = await response.json()
+      setWeather(data)
+      setLoading(false)
+    } catch (error) {
+      setErrorMsg(error)
+      console.log("error is: ", error)
+      setLoading(false)
+    }
+  }
 
-    const response = await fetch(url)
-    const data = await response.json()
-    console.log(data)
-    setWeather(data)
+  const getWeatherByCityName = async (cityName) => {
+    try {
+      let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`
+      setLoading(true)
+      const response = await fetch(url)
+      const data = await response.json()
+      console.log("cityData: ", data)
+      setWeather(data)
+      setLoading(false)
+    } catch (error) {
+      console.log("error is: ", error)
+      setErrorMsg(error)
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    getCurrentLocation()
-  }, [])
-
-  // useEffect(() => {
-  //   console.log("lat:", lat, "lon:", lon)
-  //   getWeather(lat, lon)
-  // }, [lat, lon])
+    console.log("cityCurrent: ", city)
+    if (city == "") {
+      getCurrentLocation()
+    } else if (city == "current") {
+      getCurrentLocation()
+    }
+    else {
+      getWeatherByCityName(city)
+    }
+  }, [city])
 
   return (
     <div>
-      <div className='container'>
-        <WeatherBox weather={weather} />
-        <WeatherButton />
-      </div>
-      {/* <div>
-        cityName: {cityName}
-      </div>
-      <div>
-        cityTemp(K): {cityTemp}
-      </div>
-      <div>
-        cityTemp(F): {((cityTemp - 273.15) * 9 / 5 + 32).toFixed(2)}
-      </div>
-      <div>
-        cityTemp(C): {(cityTemp - 273.15).toFixed(2)}
-      </div> */}
+      {console.log("errorMsg:~~~~", errorMsg)}
+      {loading ? (
+        <div className='container'>
+          <ClipLoader color='#f88c6b' loading={loading} size={150} aria-label="Loading Spinner" data-testid="loader" />
+        </div>
+      ) : errorMsg ? (
+        <div className='container'>
+          <div className='errorMsg'>Error!!!!!!!!!!</div>
+        </div>
+      ) : (
+        <div className='container'>
+          <WeatherBox weather={weather} />
+          <WeatherButton cities={cities} setCity={setCity} selected={city} getCurrentLocation={getCurrentLocation} />
+        </div>
+      )}
     </div>
   );
 }
