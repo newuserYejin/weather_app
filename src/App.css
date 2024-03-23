@@ -1,38 +1,82 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Black+And+White+Picture&family=Roboto:ital,wght@0,400;0,500;0,900;1,500&display=swap');
+
+body {
+    background-image: url("https://cdn.dribbble.com/users/1761137/screenshots/3665783/dribbble.gif");
+    background-repeat: no-repeat;
+    background-size: 100% 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#root {
+    background-color: rgba(222, 226, 230, 0.35);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    width: 70%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.weatherbox {
+    border: solid 5px #f4d06f;
+    border-radius: 30px;
+    background-color: #9dd9d2;
+    margin-bottom: 2em;
+    width: 70%;
+    height: 25%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+
+    font-size: 1.8em;
 }
 
-.App-link {
-  color: #61dafb;
+.LocationBtn {
+    font-family: "Roboto", sans-serif;
+    font-weight: 600;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.buttonBox {
+    width: 70%;
+    max-width: 500px;
+    display: flex;
+    justify-content: space-around;
+}
+
+@media (max-width : 710px) {
+    .weatherbox {
+        width: 80%;
+        font-size: 1.5em;
+    }
+
+    .LocationBtn {
+        font-size: 0.8em;
+    }
+
+    .buttonBox {
+        width: 70%;
+    }
+}
+
+@media (max-width : 580px) {
+    .weatherbox {
+        width: 100%;
+        font-size: 1.2em;
+    }
+
+    .LocationBtn {
+        font-size: 0.6em;
+    }
+
+    .buttonBox {
+        width: 100%;
+    }
 }
